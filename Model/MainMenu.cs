@@ -7,17 +7,18 @@ using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using System.Xml.Linq;
 
 namespace Model
 {
-    public class DepositAccounts : BaseBLItem
+    public class MainMenu : BaseBLItem
     {
 
-        public DepositAccounts()
+        public MainMenu()
         {
-            this.JsonPath = Path.Combine(ConfigurationManager.AppSettings["JsonPath"], "DepositAccounts.json");
+            this.JsonPath = Path.Combine(ConfigurationManager.AppSettings["MainMenuPath"]);
             DummyInitail();
         }
+
+        
     }
 }

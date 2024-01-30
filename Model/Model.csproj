@@ -45,9 +45,11 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="BaseObject\Buisness\BaseBLItem.cs" />
     <Compile Include="BaseObject\ServiceResult.cs" />
     <Compile Include="DepositAccounts.cs" />
     <Compile Include="JsonModifyCommandModel.cs" />
+    <Compile Include="MainMenu.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
