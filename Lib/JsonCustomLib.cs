@@ -23,37 +23,37 @@ namespace Lib
     /// 然後Role有以下
     /// 
     /// "roles": [
-  //  1,
-  //  2,
-  //  3,
-  //  4,
-  //  5,
-  //  6,
-  //  7,
-  //  8,
-  //  9,
-  //  10,
-  //  11,
-  //  12,
-  //  98,
-  //  99,
-  //  201,
-  //  202,
-  //  203,
-  //  204,
-  //  205,
-  //  206,
-  //  207,
-  //  208,
-  //  209,
-  //  210,
-  //  211,
-  //  212,
-  //  298,
-  //  299,
-  //  215,
-  //  216
-  //]
+    //  1,
+    //  2,
+    //  3,
+    //  4,
+    //  5,
+    //  6,
+    //  7,
+    //  8,
+    //  9,
+    //  10,
+    //  11,
+    //  12,
+    //  98,
+    //  99,
+    //  201,
+    //  202,
+    //  203,
+    //  204,
+    //  205,
+    //  206,
+    //  207,
+    //  208,
+    //  209,
+    //  210,
+    //  211,
+    //  212,
+    //  298,
+    //  299,
+    //  215,
+    //  216
+    //]
     /// 
     /// 那就"screenID": "CustomerInfo/062000"的Role設定抓出來
     /// 
@@ -65,10 +65,18 @@ namespace Lib
     /// </summary>
     public class JsonCustomLib
     {
-        private List<int> UserRoles { get; set; }
+        private List<int> _UserRoles { get; set; }
+
+        private JObject _JsonItem { get; set; }
+
+        private JsonModifyCommandModel _JsonModifyCommandModel { get; set; }
+
+        private FileOperationLib _FileOperationLib { get; set; }
+
         public JsonCustomLib()
         {
-            this.UserRoles = InitialUserRoles();
+            this._UserRoles = InitialUserRoles();
+            this._FileOperationLib = new FileOperationLib();
         }
 
         public ServiceResult ModifyDepositAccountsJsonByUserCommand(JsonModifyCommandModel commandModel)
@@ -76,21 +84,11 @@ namespace Lib
             var result = new ServiceResult();
             try
             {
-                var target = new DepositAccounts();
+                ProcessInitial(commandModel);
 
-                var jsonItem = target.JsonObject;
+                SetRoleFalseByScreenId(_JsonItem, _JsonModifyCommandModel.ScreenID);
 
-                string screenIdToFind = commandModel.screenID;
-                int[] roles = GetRolesByScreenId(jsonItem, screenIdToFind);
-
-                if (roles != null)
-                {
-                    Console.WriteLine($"Roles for screenID {screenIdToFind}: {string.Join(", ", roles)}");
-                }
-                else
-                {
-                    Console.WriteLine($"No roles found for screenID {screenIdToFind}");
-                }
+                _FileOperationLib.DocumentOverWriteProcess();
 
                 return result;
             }
@@ -100,6 +98,43 @@ namespace Lib
                 throw;
             }
         }
+
+        private void ProcessInitial(JsonModifyCommandModel commandModel)
+        {
+            try
+            {
+                _JsonModifyCommandModel = commandModel;
+                var target = _FileOperationLib.GetFileJsonObject(_JsonModifyCommandModel.TargetFile).Data;
+
+                _JsonItem = target;
+            }
+            catch (Exception)
+            {
+
+                throw;
+            }
+        }
+
+        private ServiceResult SetRoleFalseByScreenId(JObject jsonObject, string screenId)
+        {
+            var result = new ServiceResult();
+            try
+            {
+                var targetNode = jsonObject.SelectToken($"$..[?(@.screenID == '{screenId}')]")["roles"];
+
+                var targetRoleAdr = _UserRoles.IndexOf(_JsonModifyCommandModel.TargetRole);
+
+                targetNode[targetRoleAdr] = 17;
+
+                return result;
+            }
+            catch (Exception)
+            {
+                throw;
+            }
+        }
+
+
 
         private int[] GetRolesByScreenId(JObject jsonObject, string screenId)
         {
@@ -126,6 +161,10 @@ namespace Lib
             }
         }
 
+        /// <summary>
+        /// TODO改成指定的檔案
+        /// </summary>
+        /// <returns></returns>
         private List<int> InitialUserRoles()
         {
             var result = new List<int>();
@@ -135,7 +174,7 @@ namespace Lib
                 var jsonObject = mainMenuItem.JsonObject;
                 var targetItem = jsonObject["roles"];
 
-                if ( targetItem!= null)
+                if (targetItem != null)
                 {
                     result = targetItem.ToObject<List<int>>();
                 }
@@ -144,7 +183,6 @@ namespace Lib
             }
             catch (Exception)
             {
-
                 throw;
             }
         }

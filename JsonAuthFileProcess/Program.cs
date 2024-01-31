@@ -45,7 +45,12 @@ namespace JsonAuthFileProcess
                 Console.WriteLine("請輸入指令(逗號分割)\r\n(<交易代號>,<啟用或停用(Y/N)>)");
                 var userInput = Console.ReadLine();
 
-                result.screenID = userInput.Split(',')[0];
+                if (userInput==string.Empty)
+                {
+                    return result;
+                }
+
+                result.ScreenID = userInput.Split(',')[0];
 
                 string authCommand = userInput.Split(',')[1];
 
