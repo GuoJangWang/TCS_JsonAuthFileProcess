@@ -15,7 +15,7 @@ namespace JsonAuthFileProcess
     {
         public static string LogPath { get; set; } = ConfigurationManager.AppSettings["LogPath"];
 
-        public static JsonCustomLib JCustomLib = new JsonCustomLib();
+        public static JsonCustomLib JCustomLib { get; set; }
 
         static async Task Main(string[] args)
         {
@@ -26,8 +26,10 @@ namespace JsonAuthFileProcess
                     // 獲取用戶輸入
                     JsonModifyCommandModel userInput = GetJsonModifyCommand();
 
+                    JCustomLib = new JsonCustomLib(userInput);
+
                     // 處理用戶輸入
-                    await ProcessJsonModifyAsync(userInput);
+                    await ProcessJsonModifyAsync();
                 }
             }
             catch (Exception ex)
@@ -45,7 +47,7 @@ namespace JsonAuthFileProcess
                 Console.WriteLine("請輸入指令(逗號分割)\r\n(<交易代號>,<啟用或停用(Y/N)>)");
                 var userInput = Console.ReadLine();
 
-                if (userInput==string.Empty)
+                if (userInput == string.Empty)
                 {
                     return result;
                 }
@@ -80,7 +82,7 @@ namespace JsonAuthFileProcess
             {
                 var time = DateTime.Now.ToString("yyyyMMddHHmmssfff");
 
-                var filePath = Path.Combine(LogPath, time+ ".txt");
+                var filePath = Path.Combine(LogPath, time + ".txt");
 
                 File.WriteAllText(filePath, exceptionDetails);
             }
@@ -90,11 +92,11 @@ namespace JsonAuthFileProcess
                 Console.WriteLine("Failed to write exception details to the file.");
             }
         }
-        private static async Task ProcessJsonModifyAsync(JsonModifyCommandModel userInput)
+        private static async Task ProcessJsonModifyAsync()
         {
             try
             {
-                JCustomLib.ModifyDepositAccountsJsonByUserCommand(userInput);
+                JCustomLib.ModifyDepositAccountsJsonByUserCommand();
             }
             catch (Exception)
             {

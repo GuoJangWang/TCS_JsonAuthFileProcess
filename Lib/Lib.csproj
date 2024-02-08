@@ -47,6 +47,7 @@
   <ItemGroup>
     <Compile Include="ExtensionMethod.cs" />
     <Compile Include="FileOperationLib.cs" />
+    <Compile Include="Interface\ILibGeneralField.cs" />
     <Compile Include="JsonCustomLib.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
@@ -63,5 +64,6 @@
       <Name>Model</Name>
     </ProjectReference>
   </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

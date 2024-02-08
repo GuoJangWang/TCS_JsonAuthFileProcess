@@ -7,6 +7,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Lib.Interface;
 
 namespace Lib
 {
@@ -63,30 +64,34 @@ namespace Lib
     /// 只是沒權限的是位址13改成17
     /// 
     /// </summary>
-    public class JsonCustomLib
+    public class JsonCustomLib : ILibGeneralField, IDisposable
     {
+        private bool disposedValue;
+
         private List<int> _UserRoles { get; set; }
 
         private JObject _JsonItem { get; set; }
 
-        private JsonModifyCommandModel _JsonModifyCommandModel { get; set; }
+        public JsonModifyCommandModel JsonModifyCommandModel { get; set; }
 
         private FileOperationLib _FileOperationLib { get; set; }
 
-        public JsonCustomLib()
+        public JsonCustomLib(JsonModifyCommandModel commandModel)
         {
+            ProcessInitial(commandModel);
             this._UserRoles = InitialUserRoles();
-            this._FileOperationLib = new FileOperationLib();
+            this._FileOperationLib = new FileOperationLib(commandModel);
         }
 
-        public ServiceResult ModifyDepositAccountsJsonByUserCommand(JsonModifyCommandModel commandModel)
+        public ServiceResult ModifyDepositAccountsJsonByUserCommand()
         {
             var result = new ServiceResult();
             try
             {
-                ProcessInitial(commandModel);
 
-                SetRoleFalseByScreenId(_JsonItem, _JsonModifyCommandModel.ScreenID);
+
+                //TODO未來要改成實作成下指令的
+                SetRoleFalseByScreenId(_JsonItem, JsonModifyCommandModel.ScreenID);
 
                 _FileOperationLib.DocumentOverWriteProcess();
 
@@ -99,12 +104,16 @@ namespace Lib
             }
         }
 
+        /// <summary>
+        /// 把要修改的檔案Load成jObj
+        /// </summary>
+        /// <param name="commandModel"></param>
         private void ProcessInitial(JsonModifyCommandModel commandModel)
         {
             try
             {
-                _JsonModifyCommandModel = commandModel;
-                var target = _FileOperationLib.GetFileJsonObject(_JsonModifyCommandModel.TargetFile).Data;
+                JsonModifyCommandModel = commandModel;
+                var target = _FileOperationLib.GetFileJsonObject(JsonModifyCommandModel.TargetFile).Data;
 
                 _JsonItem = target;
             }
@@ -115,6 +124,12 @@ namespace Lib
             }
         }
 
+        /// <summary>
+        /// jObj的權限修改操作
+        /// </summary>
+        /// <param name="jsonObject"></param>
+        /// <param name="screenId"></param>
+        /// <returns></returns>
         private ServiceResult SetRoleFalseByScreenId(JObject jsonObject, string screenId)
         {
             var result = new ServiceResult();
@@ -122,7 +137,7 @@ namespace Lib
             {
                 var targetNode = jsonObject.SelectToken($"$..[?(@.screenID == '{screenId}')]")["roles"];
 
-                var targetRoleAdr = _UserRoles.IndexOf(_JsonModifyCommandModel.TargetRole);
+                var targetRoleAdr = _UserRoles.IndexOf(JsonModifyCommandModel.TargetRole);
 
                 targetNode[targetRoleAdr] = 17;
 
@@ -187,6 +202,33 @@ namespace Lib
             }
         }
 
+        protected virtual void Dispose(bool disposing)
+        {
+            if (!disposedValue)
+            {
+                if (disposing)
+                {
+                    // TODO: 處置受控狀態 (受控物件)
+                }
 
+                // TODO: 釋出非受控資源 (非受控物件) 並覆寫完成項
+                // TODO: 將大型欄位設為 Null
+                disposedValue = true;
+            }
+        }
+
+        // // TODO: 僅有當 'Dispose(bool disposing)' 具有會釋出非受控資源的程式碼時，才覆寫完成項
+        // ~JsonCustomLib()
+        // {
+        //     // 請勿變更此程式碼。請將清除程式碼放入 'Dispose(bool disposing)' 方法
+        //     Dispose(disposing: false);
+        // }
+
+        public void Dispose()
+        {
+            // 請勿變更此程式碼。請將清除程式碼放入 'Dispose(bool disposing)' 方法
+            Dispose(disposing: true);
+            GC.SuppressFinalize(this);
+        }
     }
 }
