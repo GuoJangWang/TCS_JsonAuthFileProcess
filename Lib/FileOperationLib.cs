@@ -16,35 +16,28 @@ namespace Lib
     {
         public string DeployWorkingRoot { get; set; }
 
+        public string TargetFilePath { get; set; }
+
         public JsonModifyCommandModel JsonModifyCommandModel { get; set; }
 
         public FileOperationLib(JsonModifyCommandModel commandModel)
         {
             this.DeployWorkingRoot = ConfigurationManager.AppSettings["DeployWorkingRoot"];
             this.JsonModifyCommandModel = commandModel;
+            this.TargetFilePath = GetTargetFilePath(JsonModifyCommandModel.TargetFileName,DeployWorkingRoot).Data;
         }
 
         /// <summary>
-        /// TODO實作
+        /// TODO
         /// </summary>
         /// <returns></returns>
-        public ServiceResult DocumentOverWriteProcess()
+        public ServiceResult DocumentOverWriteProcess(JObject newValue)
         {
             var result = new ServiceResult();
             try
             {
-                // 讀取文件內容
-                string fileContent = File.ReadAllText(DeployWorkingRoot);
-
-                // 在這裡對文件內容進行修改
-                // 例如，將文字添加到文件末尾
-                fileContent += "\nThis is the appended text.";
-
                 // 將修改後的內容寫回文件
-                File.WriteAllText(filePath, fileContent);
-
-                Console.WriteLine("File modified successfully.");
-
+                File.WriteAllText(TargetFilePath, newValue.ToString());
 
                 return result;
             }
@@ -58,12 +51,15 @@ namespace Lib
         /// 
         /// </summary>
         /// <returns></returns>
-        public ServiceResult<JObject> GetFileJsonObject(string targetFileName)
+        public ServiceResult<JObject> GetFileJsonObject()
         {
             var result = new ServiceResult<JObject>();
             try
             {
+                byte[] fileBytes = File.ReadAllBytes(TargetFilePath);
+                JObject jItem = JObject.Parse(System.Text.Encoding.UTF8.GetString(fileBytes));
 
+                result.Data = jItem;
 
                 return result;
             }
@@ -73,38 +69,26 @@ namespace Lib
             }
         }
 
-        private string FindFile(string targetFileName)
+        private ServiceResult<string> GetTargetFilePath(string targetFileName, string dir = null)
         {
-            string[] files = null;
-            string[] subdirectories = null;
-
             // 檢查目錄是否存在
-            if (!Directory.Exists(DeployWorkingRoot))
-                return null;
+            var result = new ServiceResult<string>();
 
             try
             {
-                // 檢查當前目錄中是否有目標文件
-                files = Directory.GetFiles(DeployWorkingRoot, targetFileName);
-                if (files.Length > 0)
-                    return files[0]; // 如果找到文件，返回文件路徑
+                string[] files = Directory.GetFiles(dir, targetFileName, SearchOption.AllDirectories);
 
-                // 如果沒有找到目標文件，遞歸搜索子目錄
-                subdirectories = Directory.GetDirectories(DeployWorkingRoot);
-                foreach (string subdir in subdirectories)
+                if (files.Length > 0)
                 {
-                    string foundPath = FindFile(subdir, targetFileName);
-                    if (foundPath != null)
-                        return foundPath; // 如果在子目錄中找到文件，返回文件路徑
+                    result.Data = files[0];
                 }
+
+                return result;
             }
             catch (Exception)
             {
-                // 可以在此處處理任何錯誤
-                // 如果有必要，你可以將這些錯誤記錄到日誌中
+                throw;
             }
-
-            return null; // 如果未找到目標文件，返回null
         }
 
     }

@@ -55,6 +55,10 @@
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\Common\Common.csproj">
+      <Project>{E973B842-150A-4E3E-BD57-49E2F341E05A}</Project>
+      <Name>Common</Name>
+    </ProjectReference>
     <ProjectReference Include="..\DAL\DAL.csproj">
       <Project>{ada7e9c3-696f-4551-9e07-d5cc8669554f}</Project>
       <Name>DAL</Name>

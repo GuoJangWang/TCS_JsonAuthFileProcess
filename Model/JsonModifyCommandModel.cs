@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using static Common.SystemEnum;
 
 namespace Model
 {
@@ -10,16 +11,16 @@ namespace Model
     {
         public JsonModifyCommandModel()
         {
-                
+
         }
 
-        public string ScreenID { get; set; } = "CustomerInfo/062000";
+        public string ScreenID { get; set; }
 
-        public bool Auth { get; set; }
+        public JsonAuthType Auth { get; set; } = JsonAuthType.disable;
 
         public int TargetRole { get; set; } = 99;
 
-        public string TargetFile { get; set; } = "DepositAccounts.json";
+        public string TargetFileName { get; set; } = "DepositAccounts.json";
 
     }
 }

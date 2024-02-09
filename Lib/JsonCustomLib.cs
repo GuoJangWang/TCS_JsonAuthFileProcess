@@ -8,6 +8,8 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Lib.Interface;
+using System.Net.Http.Headers;
+using Common;
 
 namespace Lib
 {
@@ -68,9 +70,10 @@ namespace Lib
     {
         private bool disposedValue;
 
-        private List<int> _UserRoles { get; set; }
+        private JObject NewJObj { get; set; }
 
-        private JObject _JsonItem { get; set; }
+        private JObject OldJObj { get; set; }
+        private List<int> _UserRoles { get; set; }
 
         public JsonModifyCommandModel JsonModifyCommandModel { get; set; }
 
@@ -78,22 +81,28 @@ namespace Lib
 
         public JsonCustomLib(JsonModifyCommandModel commandModel)
         {
+            this._FileOperationLib = new FileOperationLib(commandModel);
             ProcessInitial(commandModel);
             this._UserRoles = InitialUserRoles();
-            this._FileOperationLib = new FileOperationLib(commandModel);
         }
 
+        /// <summary>
+        /// 檔案、電文皆預設多層
+        /// </summary>
+        /// <returns></returns>
         public ServiceResult ModifyDepositAccountsJsonByUserCommand()
         {
             var result = new ServiceResult();
             try
             {
-
-
                 //TODO未來要改成實作成下指令的
-                SetRoleFalseByScreenId(_JsonItem, JsonModifyCommandModel.ScreenID);
-
-                _FileOperationLib.DocumentOverWriteProcess();
+                GetNewJObj();
+                
+                //todo 要改成輪循多個檔案
+                if (NewJObj.ToString()!=OldJObj.ToString())
+                {
+                    _FileOperationLib.DocumentOverWriteProcess(NewJObj);
+                }
 
                 return result;
             }
@@ -113,9 +122,9 @@ namespace Lib
             try
             {
                 JsonModifyCommandModel = commandModel;
-                var target = _FileOperationLib.GetFileJsonObject(JsonModifyCommandModel.TargetFile).Data;
+                var target = _FileOperationLib.GetFileJsonObject().Data;
 
-                _JsonItem = target;
+                OldJObj = target;
             }
             catch (Exception)
             {
@@ -130,16 +139,17 @@ namespace Lib
         /// <param name="jsonObject"></param>
         /// <param name="screenId"></param>
         /// <returns></returns>
-        private ServiceResult SetRoleFalseByScreenId(JObject jsonObject, string screenId)
+        private ServiceResult GetNewJObj()
         {
             var result = new ServiceResult();
             try
             {
-                var targetNode = jsonObject.SelectToken($"$..[?(@.screenID == '{screenId}')]")["roles"];
+                NewJObj = new JObject(OldJObj);
+                var targetNode = NewJObj.SelectToken($"$..[?(@.screenID == '{JsonModifyCommandModel.ScreenID}')]")["roles"];
 
                 var targetRoleAdr = _UserRoles.IndexOf(JsonModifyCommandModel.TargetRole);
 
-                targetNode[targetRoleAdr] = 17;
+                targetNode[targetRoleAdr] = JsonModifyCommandModel.Auth.ToEnumIntVal<SystemEnum.JsonAuthType>();
 
                 return result;
             }

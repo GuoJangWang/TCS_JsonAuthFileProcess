@@ -6,6 +6,7 @@ using System.Linq;
 using System.Runtime.CompilerServices;
 using System.Text;
 using System.Threading.Tasks;
+using Common;
 using Lib;
 using Model;
 
@@ -47,23 +48,23 @@ namespace JsonAuthFileProcess
                 Console.WriteLine("請輸入指令(逗號分割)\r\n(<交易代號>,<啟用或停用(Y/N)>)");
                 var userInput = Console.ReadLine();
 
-                if (userInput == string.Empty)
-                {
-                    return result;
-                }
+                //if (userInput == string.Empty)
+                //{
+                //    return result;
+                //}
 
-                result.ScreenID = userInput.Split(',')[0];
+                result.ScreenID = userInput.Split(',')[0]==string.Empty? "CustomerInfo/062000": userInput.Split(',')[0];
 
                 string authCommand = userInput.Split(',')[1];
 
                 switch (authCommand)
                 {
                     case "Y":
-                        result.Auth = true;
+                        result.Auth = SystemEnum.JsonAuthType.able;
                         break;
                     case "N":
                     default:
-                        result.Auth = false;
+                        result.Auth = SystemEnum.JsonAuthType.disable;
                         break;
                 }
 

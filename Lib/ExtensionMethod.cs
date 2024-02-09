@@ -1,4 +1,5 @@
-﻿using Model.BaseObject;
+﻿using Common;
+using Model.BaseObject;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -22,5 +23,34 @@ namespace Lib
 				throw;
 			}
         }
+
+        public static void AddError<T>(this ServiceResult<T> serviceResult, string msg)
+        {
+            try
+            {
+                serviceResult.State = false;
+                serviceResult.Msg = msg;
+            }
+            catch (Exception)
+            {
+
+                throw;
+            }
+        }
+
+        public static int ToEnumIntVal<T>(this Enum targetEnum)
+        {
+            try
+            {
+                var result = Enum.Parse(typeof(T), targetEnum.ToString());
+                return (int)result;
+            }
+            catch (Exception)
+            {
+
+                throw;
+            }
+        }
+
     }
 }
