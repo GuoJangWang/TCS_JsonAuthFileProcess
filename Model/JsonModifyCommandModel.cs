@@ -14,13 +14,23 @@ namespace Model
 
         }
 
-        public string ScreenID { get; set; }
+        /// <summary>
+        /// 交易代號
+        /// </summary>
+        public string TransactionID { get; set; }
 
+        /// <summary>
+        /// 權限設定
+        /// </summary>
         public JsonAuthType Auth { get; set; } = JsonAuthType.disable;
 
-        public int TargetRole { get; set; } = 99;
+        /// <summary>
+        /// 目標角色
+        /// </summary>
+        public int TargetRole { get; set; }
 
-        public string TargetFileName { get; set; } = "DepositAccounts.json";
+
+        //public string TargetFileName { get; set; } = "DepositAccounts.json";
 
     }
 }

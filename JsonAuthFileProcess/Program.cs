@@ -53,7 +53,7 @@ namespace JsonAuthFileProcess
                 //    return result;
                 //}
 
-                result.ScreenID = userInput.Split(',')[0]==string.Empty? "CustomerInfo/062000": userInput.Split(',')[0];
+                result.TransactionID = userInput.Split(',')[0]==string.Empty? "CustomerInfo/062000": userInput.Split(',')[0];
 
                 string authCommand = userInput.Split(',')[1];
 

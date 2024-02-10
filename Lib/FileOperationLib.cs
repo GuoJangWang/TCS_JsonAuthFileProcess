@@ -1,6 +1,7 @@
 ﻿using Lib.Interface;
 using Model;
 using Model.BaseObject;
+using Model.BaseObject.Buisness;
 using Newtonsoft.Json.Linq;
 using System;
 using System.Collections.Generic;
@@ -16,15 +17,15 @@ namespace Lib
     {
         public string DeployWorkingRoot { get; set; }
 
-        public string TargetFilePath { get; set; }
+        public Dictionary<BaseBLItem,string> TargetFilePaths { get; set; }
 
-        public JsonModifyCommandModel JsonModifyCommandModel { get; set; }
+        public Dictionary<BaseBLItem,JsonModifyCommandModel> JsonModifyCommandModels { get; set; }
 
-        public FileOperationLib(JsonModifyCommandModel commandModel)
+        public FileOperationLib(Dictionary<BaseBLItem,JsonModifyCommandModel> commandModels)
         {
             this.DeployWorkingRoot = ConfigurationManager.AppSettings["DeployWorkingRoot"];
-            this.JsonModifyCommandModel = commandModel;
-            this.TargetFilePath = GetTargetFilePath(JsonModifyCommandModel.TargetFileName,DeployWorkingRoot).Data;
+            this.JsonModifyCommandModels = commandModel;
+            this.TargetFilePaths = GetTargetFilePath(JsonModifyCommandModels.TargetFileName,DeployWorkingRoot).Data;
         }
 
         /// <summary>
@@ -37,7 +38,7 @@ namespace Lib
             try
             {
                 // 將修改後的內容寫回文件
-                File.WriteAllText(TargetFilePath, newValue.ToString());
+                File.WriteAllText(TargetFilePaths, newValue.ToString());
 
                 return result;
             }
@@ -56,7 +57,7 @@ namespace Lib
             var result = new ServiceResult<JObject>();
             try
             {
-                byte[] fileBytes = File.ReadAllBytes(TargetFilePath);
+                byte[] fileBytes = File.ReadAllBytes(TargetFilePaths);
                 JObject jItem = JObject.Parse(System.Text.Encoding.UTF8.GetString(fileBytes));
 
                 result.Data = jItem;

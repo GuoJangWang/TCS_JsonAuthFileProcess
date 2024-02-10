@@ -1,4 +1,5 @@
 ﻿using Model;
+using Model.BaseObject.Buisness;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -9,6 +10,6 @@ namespace Lib.Interface
 {
     public interface ILibGeneralField
     {
-        JsonModifyCommandModel JsonModifyCommandModel { get; set; }
+        Dictionary<BaseBLItem, JsonModifyCommandModel> JsonModifyCommandModel { get; set; }
     }
 }

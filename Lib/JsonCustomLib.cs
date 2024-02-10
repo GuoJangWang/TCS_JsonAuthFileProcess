@@ -95,7 +95,6 @@ namespace Lib
             var result = new ServiceResult();
             try
             {
-                //TODO未來要改成實作成下指令的
                 GetNewJObj();
                 
                 //todo 要改成輪循多個檔案
@@ -145,7 +144,7 @@ namespace Lib
             try
             {
                 NewJObj = new JObject(OldJObj);
-                var targetNode = NewJObj.SelectToken($"$..[?(@.screenID == '{JsonModifyCommandModel.ScreenID}')]")["roles"];
+                var targetNode = NewJObj.SelectToken($"$..[?(@.screenID == '{JsonModifyCommandModel.TransactionID}')]")["roles"];
 
                 var targetRoleAdr = _UserRoles.IndexOf(JsonModifyCommandModel.TargetRole);
 
