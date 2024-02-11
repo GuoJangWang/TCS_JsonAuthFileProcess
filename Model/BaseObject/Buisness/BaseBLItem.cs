@@ -10,6 +10,8 @@ namespace Model.BaseObject.Buisness
 {
     public class BaseBLItem
     {
+        public string JsonFileName {  get; set; }
+
         protected string JsonPath { get; set; }
 
         public JObject JsonObject { get; set; }

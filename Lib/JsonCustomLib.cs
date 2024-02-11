@@ -79,10 +79,10 @@ namespace Lib
 
         private FileOperationLib _FileOperationLib { get; set; }
 
-        public JsonCustomLib(JsonModifyCommandModel commandModel)
+        public JsonCustomLib(List<JsonModifyCommandModel> commandModels)
         {
-            this._FileOperationLib = new FileOperationLib(commandModel);
-            ProcessInitial(commandModel);
+            this._FileOperationLib = new FileOperationLib(commandModels);
+            ProcessInitial(commandModels);
             this._UserRoles = InitialUserRoles();
         }
 

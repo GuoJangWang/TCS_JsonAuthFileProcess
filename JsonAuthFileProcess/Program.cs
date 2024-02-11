@@ -25,9 +25,9 @@ namespace JsonAuthFileProcess
                 while (true)
                 {
                     // 獲取用戶輸入
-                    JsonModifyCommandModel userInput = GetJsonModifyCommand();
+                    List<JsonModifyCommandModel> userInputs = GetJsonModifyCommand();
 
-                    JCustomLib = new JsonCustomLib(userInput);
+                    JCustomLib = new JsonCustomLib(userInputs);
 
                     // 處理用戶輸入
                     await ProcessJsonModifyAsync();
@@ -40,34 +40,38 @@ namespace JsonAuthFileProcess
             }
         }
 
-        private static JsonModifyCommandModel GetJsonModifyCommand()
+        private static List<JsonModifyCommandModel> GetJsonModifyCommand()
         {
-            var result = new JsonModifyCommandModel();
+            var result = new List<JsonModifyCommandModel>();
             try
             {
-                Console.WriteLine("請輸入指令(逗號分割)\r\n(<交易代號>,<啟用或停用(Y/N)>)");
-                var userInput = Console.ReadLine();
+                Console.WriteLine("請輸入指令(逗號分割)\r\n(<系統角色代號>,<交易代號>,<啟用或停用(Y/N)>)輸入多筆以<&>分割");
+                var userInput = Console.ReadLine().Trim();
 
-                //if (userInput == string.Empty)
-                //{
-                //    return result;
-                //}
+                var commandArray = userInput.Split('&');
 
-                result.TransactionID = userInput.Split(',')[0]==string.Empty? "CustomerInfo/062000": userInput.Split(',')[0];
-
-                string authCommand = userInput.Split(',')[1];
-
-                switch (authCommand)
+                foreach (var command in commandArray)
                 {
-                    case "Y":
-                        result.Auth = SystemEnum.JsonAuthType.able;
-                        break;
-                    case "N":
-                    default:
-                        result.Auth = SystemEnum.JsonAuthType.disable;
-                        break;
-                }
+                    var thisCommand = new JsonModifyCommandModel();
+                    thisCommand.TargetRole = int.Parse(command.Split(',')[0]);
 
+                    thisCommand.TransactionID = command.Split(',')[1];
+
+                    string authCommand = command.Split(',')[2];
+
+                    switch (authCommand)
+                    {
+                        case "Y":
+                            thisCommand.Auth = SystemEnum.JsonAuthType.able;
+                            break;
+                        case "N":
+                        default:
+                            thisCommand.Auth = SystemEnum.JsonAuthType.disable;
+                            break;
+                    }
+                    result.Add(thisCommand);
+                }
+                
                 return result;
             }
             catch (Exception)
