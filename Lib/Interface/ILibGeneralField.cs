@@ -10,6 +10,6 @@ namespace Lib.Interface
 {
     public interface ILibGeneralField
     {
-        Dictionary<BaseBLItem, JsonModifyCommandModel> JsonModifyCommandModel { get; set; }
+        List<JsonModifyCommandModel> JsonModifyCommandModels { get; set; }
     }
 }

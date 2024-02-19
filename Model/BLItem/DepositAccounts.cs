@@ -1,4 +1,5 @@
 ﻿using Model.BaseObject.Buisness;
+using Model.Interface;
 using Newtonsoft.Json.Linq;
 using System;
 using System.Collections.Generic;
@@ -14,9 +15,9 @@ namespace Model
     public class DepositAccounts : BaseBLItem
     {
 
-        public DepositAccounts()
+        public DepositAccounts(string fileName)
         {
-            this.JsonPath = Path.Combine(ConfigurationManager.AppSettings["JsonPath"], "DepositAccounts.json");
+            this.JsonPath = Path.Combine(ConfigurationManager.AppSettings["JsonPath"], fileName);
             DummyInitail();
         }
     }

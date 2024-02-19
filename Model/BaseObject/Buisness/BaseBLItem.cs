@@ -1,4 +1,5 @@
-﻿using Newtonsoft.Json.Linq;
+﻿using Model.Interface;
+using Newtonsoft.Json.Linq;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -8,15 +9,15 @@ using System.Threading.Tasks;
 
 namespace Model.BaseObject.Buisness
 {
-    public class BaseBLItem
+    public class BaseBLItem : IBLItem
     {
         public string JsonFileName {  get; set; }
 
-        protected string JsonPath { get; set; }
+        public string JsonPath { get; set; }
 
         public JObject JsonObject { get; set; }
 
-        protected void DummyInitail()
+        public void DummyInitail()
         {
             try
             {

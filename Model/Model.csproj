@@ -47,9 +47,11 @@
   <ItemGroup>
     <Compile Include="BaseObject\Buisness\BaseBLItem.cs" />
     <Compile Include="BaseObject\ServiceResult.cs" />
-    <Compile Include="DepositAccounts.cs" />
+    <Compile Include="BLItem\Broker.cs" />
+    <Compile Include="BLItem\DepositAccounts.cs" />
+    <Compile Include="Interface\IBLItem.cs" />
     <Compile Include="JsonModifyCommandModel.cs" />
-    <Compile Include="MainMenu.cs" />
+    <Compile Include="BLItem\MainMenu.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
@@ -61,5 +63,6 @@
       <Name>Common</Name>
     </ProjectReference>
   </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

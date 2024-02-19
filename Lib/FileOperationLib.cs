@@ -2,6 +2,7 @@
 using Model;
 using Model.BaseObject;
 using Model.BaseObject.Buisness;
+using Model.Interface;
 using Newtonsoft.Json.Linq;
 using System;
 using System.Collections.Generic;
@@ -17,15 +18,15 @@ namespace Lib
     {
         public string DeployWorkingRoot { get; set; }
 
-        public Dictionary<BaseBLItem,string> TargetFilePaths { get; set; }
+        public Dictionary<IBLItem,string> TargetFilePaths { get; set; }
 
-        public Dictionary<BaseBLItem,JsonModifyCommandModel> JsonModifyCommandModels { get; set; }
+        public List<JsonModifyCommandModel> JsonModifyCommandModels { get; set; }
 
-        public FileOperationLib(Dictionary<BaseBLItem,JsonModifyCommandModel> commandModels)
+        public FileOperationLib(List<JsonModifyCommandModel> commandModels)
         {
             this.DeployWorkingRoot = ConfigurationManager.AppSettings["DeployWorkingRoot"];
-            this.JsonModifyCommandModels = commandModel;
-            this.TargetFilePaths = GetTargetFilePath(JsonModifyCommandModels.TargetFileName,DeployWorkingRoot).Data;
+            this.JsonModifyCommandModels = commandModels;
+            this.TargetFilePaths = GetTargetFilePath(JsonModifyCommandModels,DeployWorkingRoot).Data;
         }
 
         /// <summary>
@@ -70,7 +71,7 @@ namespace Lib
             }
         }
 
-        private ServiceResult<string> GetTargetFilePath(string targetFileName, string dir = null)
+        private ServiceResult<Dictionary<IBLItem, string>> GetTargetFilePath(List<JsonModifyCommandModel> targetFileName, string dir = null)
         {
             // 檢查目錄是否存在
             var result = new ServiceResult<string>();

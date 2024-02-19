@@ -75,9 +75,11 @@ namespace Lib
         private JObject OldJObj { get; set; }
         private List<int> _UserRoles { get; set; }
 
-        public JsonModifyCommandModel JsonModifyCommandModel { get; set; }
+        public List<JsonModifyCommandModel> JsonModifyCommandModels { get; set; }
 
         private FileOperationLib _FileOperationLib { get; set; }
+
+        private int TotalModifyBLItem {  get; set; }
 
         public JsonCustomLib(List<JsonModifyCommandModel> commandModels)
         {
@@ -95,6 +97,9 @@ namespace Lib
             var result = new ServiceResult();
             try
             {
+                //Binding BLItem to Command
+                GenerateBLItem();
+
                 GetNewJObj();
                 
                 //todo 要改成輪循多個檔案
@@ -116,7 +121,7 @@ namespace Lib
         /// 把要修改的檔案Load成jObj
         /// </summary>
         /// <param name="commandModel"></param>
-        private void ProcessInitial(JsonModifyCommandModel commandModel)
+        private void ProcessInitial(List<JsonModifyCommandModel> commandModel)
         {
             try
             {
@@ -207,6 +212,23 @@ namespace Lib
             }
             catch (Exception)
             {
+                throw;
+            }
+        }
+
+        /// <summary>
+        /// todo 每個指令和所有歸屬檔案的綁定
+        /// </summary>
+        /// <returns></returns>
+        private ServiceResult GenerateBLItem()
+        {
+            try
+            {
+                throw new NotImplementedException();
+            }
+            catch (Exception)
+            {
+
                 throw;
             }
         }

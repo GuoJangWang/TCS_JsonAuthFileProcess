@@ -27,7 +27,9 @@ namespace JsonAuthFileProcess
                     // 獲取用戶輸入
                     List<JsonModifyCommandModel> userInputs = GetJsonModifyCommand();
 
-                    JCustomLib = new JsonCustomLib(userInputs);
+                    var distUserCommand = userInputs.Distinct().ToList();
+
+                    JCustomLib = new JsonCustomLib(distUserCommand);
 
                     // 處理用戶輸入
                     await ProcessJsonModifyAsync();
